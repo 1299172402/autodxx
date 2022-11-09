@@ -138,6 +138,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--username', type=str)
     parser.add_argument('--password', type=str)
-    parser.add_argument('--org_id', type=str)
+    parser.add_argument('--org_id', type=str, default='3687819')
     args = parser.parse_args()
     main(args)
