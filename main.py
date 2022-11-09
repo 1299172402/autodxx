@@ -76,11 +76,11 @@ class Youth():
             S = requests.Session()
             headers = {"Host": "m.bjyouth.net", "User-Agent": self.ua}
             r = S.get(url="https://m.bjyouth.net/site/login", headers=headers, timeout=5)
-            #print(r.status_code)
+            print("[INFO] login response", r.status_code)
             cap_url = "https://m.bjyouth.net" + re.findall(r'src="/site/captcha.+" alt=', r.text)[0][5:-6]
             headers["Referer"] = "https://m.bjyouth.net/site/login"
             cap = S.get(url=cap_url, headers=headers, timeout=5)
-            #print(cap.status_code)
+            print("[INFO] get capture response", cap.status_code)
             ocr = DdddOcr()
             cap_text = ocr.classification(cap.content)
             print(f'[INFO] Captcha OCR: {cap_text}')
@@ -98,7 +98,8 @@ class Youth():
                              },
                              timeout=5)
             return login_r.cookies.get_dict()['PHPSESSID']
-        except:
+        except Exception as e:
+            print(f'[WARN] failed to get cookie: {e}')
             return 0
         
     def study(self):    
