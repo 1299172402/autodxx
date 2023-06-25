@@ -1,4 +1,6 @@
+import random
 import re
+import time
 import yaml
 import json
 import requests
@@ -118,6 +120,36 @@ class Youth():
         print('[INFO] study complete.')
         return 1
     
+    def learn_history(self):
+        for _ in range(3):
+            try:
+                time.sleep(random.randint(5, 10))
+                url = "https://m.bjyouth.net/dxx/history"
+                res = requests.get(url, headers=self.headers, timeout=5).json()
+                if res["code"] == 200:
+                    break
+            except Exception as e:
+                print(f'[WARN] failed to get history: {e}')
+                print(f'[WARN] retry after 5s ...')
+                time.sleep(5)
+        
+        for index in res["data"]["data"]:
+            time.sleep(random.randint(5, 10))
+            for _ in range(3):
+                try:
+                    r = requests.get(url="https://m.bjyouth.net/dxx/history-detail?id=" + str(index["id"]), headers=self.headers, timeout=5).json()
+                    if (r["code"] == 200):
+                        print(f'[INFO] history learned: {index["id"]} {index["title"]}')
+                        break
+                    else:
+                        print(f'[INFO] history not learned: {index["id"]} {index["title"]}')
+                except Exception as e:
+                    print(f'[WARN] failed to learn history: {e}')
+                    print(f'[WARN] retry after 5s ...')
+                    time.sleep(5)
+        
+        print('[INFO] learn history complete.')
+        return 1
 
 def main(args):
     print('[INFO] Start')
@@ -129,6 +161,8 @@ def main(args):
     if not youth.get_cookie():
         return 0
     if not youth.study():
+        return 0
+    if not youth.learn_history():
         return 0
 
     return 1
